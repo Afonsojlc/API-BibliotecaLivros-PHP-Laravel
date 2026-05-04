@@ -37,55 +37,47 @@ Este projeto foi desenvolvido para demonstrar a aplicação de boas práticas em
 ```bash
 git clone [https://github.com/Afonsojlc/API-BibliotecaLivros-PHP-Laravel.git](https://github.com/Afonsojlc/API-BibliotecaLivros-PHP-Laravel.git)
 cd API-BibliotecaLivros-PHP-Laravel
-
 ```
 
 **2\. Instalar dependências**
 
-Bash
 
-```
+
+```Bash
 composer install
-
 ```
 
 **3\. Configurar Variáveis de Ambiente**
 
-Bash
 
-```
+
+```Bash
 cp .env.example .env
-
 ```
 
 *No ficheiro `.env`, certifique-se que a base de dados está configurada para SQLite:*
 
-Fragmento do código
 
-```
+
+```Fragmento do código
 DB_CONNECTION=sqlite
 DB_DATABASE=database/database.sqlite
-
 ```
 
 **4\. Preparar Base de Dados e Gerar Chave**
 
-Bash
 
-```
+
+```Bash
 php artisan key:generate
 touch database/database.sqlite # Em Windows PowerShell use: New-Item -ItemType File database/database.sqlite
 php artisan migrate:fresh --seed
-
 ```
 
 **5\. Iniciar o Servidor**
 
-Bash
-
-```
+```Bash
 php artisan serve
-
 ```
 
 A API ficará disponível em `http://127.0.0.1:8000`.
