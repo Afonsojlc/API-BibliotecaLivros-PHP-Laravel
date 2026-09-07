@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers;
 
@@ -9,32 +9,33 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
-    // POST /api/register
+    // POST /api/register — Register a new user (defaults to 'leitor' reader role)
     public function register(Request $request)
     {
         $validated = $request->validate([
             'name'     => 'required|string|max:255',
             'email'    => 'required|email|unique:users',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => 'required|min:6',
+            'role'     => 'nullable|in:admin,leitor',
         ]);
 
         $user = User::create([
             'name'     => $validated['name'],
             'email'    => $validated['email'],
             'password' => Hash::make($validated['password']),
-            'role'     => 'leitor',
+            'role'     => $validated['role'] ?? 'leitor',
         ]);
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+        $token = $user->createToken('auth-token')->plainTextToken;
 
         return response()->json([
-            'message' => 'Registo efetuado com sucesso',
-            'token'   => $token,
+            'message' => 'User registered successfully.',
             'user'    => $user,
+            'token'   => $token,
         ], 201);
     }
 
-    // POST /api/login
+    // POST /api/login — Authenticate credentials and issue Sanctum token
     public function login(Request $request)
     {
         $request->validate([
@@ -46,28 +47,28 @@ class AuthController extends Controller
 
         if (! $user || ! Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages([
-                'email' => ['Credenciais inválidas.'],
+                'email' => ['Invalid credentials provided.'],
             ]);
         }
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+        $token = $user->createToken('auth-token')->plainTextToken;
 
         return response()->json([
-            'message' => 'Login efetuado com sucesso',
-            'token'   => $token,
+            'message' => 'Logged in successfully.',
             'user'    => $user,
+            'token'   => $token,
         ]);
     }
 
-    // POST /api/logout
+    // POST /api/logout — Invalidate current Sanctum access token
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
 
-        return response()->json(['message' => 'Logout efetuado com sucesso']);
+        return response()->json(['message' => 'Logged out successfully. Token revoked.']);
     }
 
-    // GET /api/me
+    // GET /api/me — Retrieve currently authenticated user profile
     public function me(Request $request)
     {
         return response()->json($request->user());

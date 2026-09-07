@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers;
 
@@ -8,18 +8,21 @@ use Illuminate\Http\Request;
 
 class ReservaController extends Controller
 {
+    // GET /api/reservas — Admin retrieves all library reservations (Paginated)
     public function index()
     {
         $reservas = Reserva::with(['user', 'livros'])->paginate(15);
         return response()->json($reservas);
     }
 
+    // GET /api/reservas/minhas — Reader retrieves their own reservations
     public function minhas(Request $request)
     {
         $reservas = $request->user()->reservas()->with('livros')->get();
         return response()->json($reservas);
     }
 
+    // POST /api/reservas — Reader requests a book reservation with quantities
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -37,6 +40,7 @@ class ReservaController extends Controller
             'estado'         => 'pendente',
         ]);
 
+        // Attach books with requested quantities via pivot table (livro_reserva)
         foreach ($validated['livros'] as $livro) {
             $reserva->livros()->attach($livro['id'], ['quantidade' => $livro['quantidade']]);
         }
@@ -44,6 +48,7 @@ class ReservaController extends Controller
         return response()->json($reserva->load('livros'), 201);
     }
 
+    // PATCH /api/reservas/{id} — Admin updates reservation status (pendente, ativa, devolvida)
     public function updateEstado(Request $request, string $id)
     {
         $reserva = Reserva::findOrFail($id);

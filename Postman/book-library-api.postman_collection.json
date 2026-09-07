@@ -1,13 +1,13 @@
-{
+﻿{
   "info": {
     "_postman_id": "1cf58086-abf4-406a-a030-76cb30251379",
-    "name": "API-BibliotecaLivros-PHP&Laravel",
+    "name": "Book Library API",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "52625259"
   },
   "item": [
     {
-      "name": "Autenticação",
+      "name": "AutenticaÃ§Ã£o",
       "item": [
         {
           "name": "CriarUser",
